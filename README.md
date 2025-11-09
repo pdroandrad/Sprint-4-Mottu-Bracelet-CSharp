@@ -1,27 +1,30 @@
-# Mottu Bracelet
+# Mottu Bracelet – Sprint 4
 
 ## 📌 Descrição do Projeto
 
-O **Mottu Bracelet** é um projeto desenvolvido para a empresa Mottu, visando o gerenciamento eficiente de motos nos pátios de manutenção. Cada moto recebe um bracelete que se comunica com o aplicativo, permitindo:
+O **Mottu Bracelet** é um projeto desenvolvido para a empresa **Mottu**, com o objetivo de otimizar o gerenciamento das motos presentes nos pátios de manutenção. Cada moto recebe um bracelete inteligente capaz de:
 
-- Localização rápida da moto no pátio.
-- Emissão de sinais sonoros e infravermelhos acionados pelo dispositivo.
-- Integração de informações entre moto, pátio e dispositivo.
+- Ajudar na localização rápida dentro do pátio.
+- Emitir sinal sonoro e infravermelho para facilitar identificação.
+- Integrar informações entre moto, dispositivo, pátio e histórico de movimentações.
 
-Esta versão do projeto implementa uma **API RESTful** utilizando **ASP.NET Core Web API**, com foco em boas práticas:
+Nesta Sprint 4, o projeto evoluiu e passou a incluir:
 
-- Endpoints CRUD para as entidades **Moto**, **Dispositivo**, **Patio** e **HistoricoPatio**.
-- Paginação em listagens.
-- Suporte a **HATEOAS** (links para navegação entre recursos).
-- Status codes HTTP adequados.
-- Documentação automática via **Swagger/OpenAPI**.
+- API Versioning (v1 e v2)  
+- Health Check (`/health`)  
+- Middleware de autenticação por API Key  
+- Endpoint de predição com ML.NET  
+- Testes unitários e de integração com xUnit  
+- Swagger com suporte a autenticação  
+- HATEOAS nos endpoints principais  
+
 ---
 
 ## 👨‍💻 Integrantes
 
-- Pedro Abrantes Andrade | RM558186
-- Ricardo Tavares de Oliveira Filho | RM556092
-- Victor Alves Carmona | RM555726
+- Pedro Abrantes Andrade | RM558186  
+- Ricardo Tavares de Oliveira Filho | RM556092  
+- Victor Alves Carmona | RM555726  
 
 ---
 
@@ -30,174 +33,273 @@ Esta versão do projeto implementa uma **API RESTful** utilizando **ASP.NET Core
 - ASP.NET Core 8.0 Web API  
 - C#  
 - Entity Framework Core  
-- Banco de Dados Oracle  
+- Oracle EF Core  
+- ML.NET  
 - Swagger / OpenAPI  
-- JSON  
-- Visual Studio 2022 ou superior  
+- xUnit  
+- WebApplicationFactory  
+- Visual Studio 2022  
 
 ---
 
+## ✅ Funcionalidades da Sprint 4
+
+### ✅ 1. Health Check
+Endpoint simples que retorna **200 OK** caso a API esteja funcionando.
+
+```GET /health```
+
+### ✅ 2. API Versioning (v1 e v2)
+Agora a API possui:
+
+- **v1** → controladores principais (Moto, Patio, Dispositivo, HistoricoPatio)  
+- **v2** → controlador de predição (Machine Learning)  
+
+Controllers usam:
+
+```
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/moto")]
+```
+
+E para ML:
+
+```
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/ml")]
+```
+
+
+### ✅ 3. Middleware de API Key
+Todos os endpoints (exceto `/health`) exigem:
+
+```
+X-API-KEY: mottu-bracelet-2025
+```
+
+### ✅ 4. Endpoint de Predição com ML.NET (v2)
+
+O endpoint estima a ocupação futura de um pátio com base em:
+
+- motos atuais
+- entrada média
+- saída média
+- capacidade máxima
+
+Endpoint:
+
+```
+POST /api/v2/ml/prever-ocupacao
+```
+
+### ✅ 5. Testes Automatizados
+
+- Testes unitários de todos os Services
+- Testes de integração
+- Banco InMemory para ambiente de teste
+
 ## 📂 Instalação e Execução
 
-### Pré-requisitos
+### ✅ Pré-requisitos
 
-- .NET 8.0 ou superior  
-- Visual Studio 2022 ou superior  
-- Acesso ao banco de dados Oracle com usuário e senha válidos  
+- .NET 8.0
+- Visual Studio 2022
+- Banco Oracle ativo
 
-### Executando o projeto
+### ✅ Passos para executar
 
 1. Clone o repositório:
 
-   ```
-   git clone https://github.com/pdroandrad/Sprint-3-Mottu-Bracelet-CSharp
-   ```
-
-2. Abra o projeto no Visual Studio.
-
-3. Verifique se a string de conexão no `appsettings.json` está correta:
-
-  ```
-  "ConnectionStrings": {
-  "DefaultConnection": "Data Source=oracle.fiap.com.br:1521/orcl; User Id='seu-usuario'; Password='sua-senha';"
-}
+```
+git clone https://github.com/pdroandrad/Sprint-4-Mottu-Bracelet-CSharp
 ```
 
-4. Rode a aplicação clicando no botão de execução com o protocolo HTTPS selecionado. O Swagger será iniciado automaticamente com os endpoints disponíveis.
+2. Abra no Visual Studio.
+3. Configure o banco no appsettings.json:
 
-### 💡 Justificativa das Entidades
+```
+"ConnectionStrings": {
+  "DefaultConnection": "Data Source=oracle.fiap.com.br:1521/orcl;User Id=SEU_USER;Password=SUA_SENHA;"
+},
+"ApiKey": "mottu-bracelet-2025"
+```
 
-Escolhemos estas entidades para representar o domínio do sistema MottuBracelet de forma completa:
+4. Execute o projeto em HTTPS.
+5. O Swagger abrirá automaticamente.
 
-- **Moto:** representa cada moto que entra no pátio e precisa ser rastreada.
-- **Dispositivo:** representa o bracelete acoplado à moto, responsável por sinais sonoros e infravermelhos.
-- **Patio:** representa os locais onde as motos são armazenadas ou mantidas.
-- **HistoricoPatio:** registra os movimentos das motos entre pátios, garantindo rastreabilidade e integridade dos dados.
-
-Essas entidades permitem um modelo consistente para gerenciar operações de localização, manutenção e histórico de forma eficiente.
+### Autenticação no Swagger
+1. Clique em Authorize.
+2. Digite:
+```
+mottu-bracelet-2025
+```
+3. Os cadeados ficarão fechados.
+4. Teste qualquer endpoint normalmente.
 
 ## 📡 Endpoints da API
 
+---
+
+## ✅ Versão 1 (v1)
+
 ### 🔧 MotoController
 
-| Método | Endpoint             | Descrição                                        |
-|--------|----------------------|--------------------------------------------------|
-| GET    | `/api/Moto`          | Retorna todas as motos com paginação.           |
-| GET    | `/api/Moto/{id}`     | Retorna uma moto específica por ID com links HATEOAS. |
-| POST   | `/api/Moto`          | Cria uma nova moto e associa ao dispositivo informado. |
-| PUT    | `/api/Moto/{id}`     | Atualiza uma moto existente.                    |
-| DELETE | `/api/Moto/{id}`     | Remove uma moto do sistema.                     |
+| Método | Endpoint               | Descrição                 |
+|--------|-------------------------|---------------------------|
+| GET    | `/api/v1/moto`          | Lista motos               |
+| GET    | `/api/v1/moto/{id}`     | Moto com HATEOAS          |
+| POST   | `/api/v1/moto`          | Cria moto                 |
+| PUT    | `/api/v1/moto/{id}`     | Atualiza moto             |
+| DELETE | `/api/v1/moto/{id}`     | Remove moto               |
 
 ---
 
 ### 🔧 DispositivoController
 
-| Método | Endpoint                  | Descrição                                         |
-|--------|---------------------------|--------------------------------------------------|
-| GET    | `/api/Dispositivo`        | Lista todos os dispositivos com paginação.       |
-| GET    | `/api/Dispositivo/{id}`   | Retorna um dispositivo específico por ID com HATEOAS. |
-| POST   | `/api/Dispositivo`        | Cria um novo dispositivo.                        |
-| PUT    | `/api/Dispositivo/{id}`   | Atualiza as informações de um dispositivo existente. |
-| DELETE | `/api/Dispositivo/{id}`   | Remove um dispositivo.                           |
+| Método | Endpoint                      | Descrição                    |
+|--------|--------------------------------|------------------------------|
+| GET    | `/api/v1/dispositivo`          | Lista dispositivos           |
+| GET    | `/api/v1/dispositivo/{id}`     | Dispositivo com HATEOAS      |
+| POST   | `/api/v1/dispositivo`          | Cria dispositivo             |
+| PUT    | `/api/v1/dispositivo/{id}`     | Atualiza dispositivo         |
+| DELETE | `/api/v1/dispositivo/{id}`     | Remove dispositivo           |
 
 ---
 
 ### 🔧 PatioController
 
-| Método | Endpoint             | Descrição                                         |
-|--------|----------------------|--------------------------------------------------|
-| GET    | `/api/Patio`         | Retorna todos os pátios cadastrados com paginação. |
-| GET    | `/api/Patio/{id}`    | Retorna um pátio específico por ID com links HATEOAS. |
-| POST   | `/api/Patio`         | Cria um novo pátio.                              |
-| PUT    | `/api/Patio/{id}`    | Atualiza informações de um pátio existente.      |
-| DELETE | `/api/Patio/{id}`    | Remove um pátio do sistema.                      |
+| Método | Endpoint               | Descrição                |
+|--------|-------------------------|--------------------------|
+| GET    | `/api/v1/patio`         | Lista pátios             |
+| GET    | `/api/v1/patio/{id}`    | Pátio com HATEOAS        |
+| POST   | `/api/v1/patio`         | Cria pátio               |
+| PUT    | `/api/v1/patio/{id}`    | Atualiza pátio           |
+| DELETE | `/api/v1/patio/{id}`    | Remove pátio             |
 
 ---
 
 ### 🔧 HistoricoPatioController
 
-| Método | Endpoint                    | Descrição                                                |
-|--------|-----------------------------|----------------------------------------------------------|
-| GET    | `/api/HistoricoPatio`       | Lista todos os registros de histórico com paginação.    |
-| GET    | `/api/HistoricoPatio/{id}`  | Retorna um registro de histórico específico por ID com links HATEOAS. |
-| POST   | `/api/HistoricoPatio`       | Cria um novo registro de movimentação de moto entre pátios. |
+| Método | Endpoint                        | Descrição                   |
+|--------|----------------------------------|-----------------------------|
+| GET    | `/api/v1/historicopatio`         | Lista registros             |
+| GET    | `/api/v1/historicopatio/{id}`    | Histórico com HATEOAS       |
+| POST   | `/api/v1/historicopatio`         | Cria registro               |
 
+---
+
+## ✅ Versão 2 (v2)
+
+### 🔧 MlController (Predição)
+
+| Método | Endpoint                          | Descrição                   |
+|--------|------------------------------------|-----------------------------|
+| POST   | `/api/v2/ml/prever-ocupacao`        | Predição de ocupação        |
+
+---
 
 ## 📦 Exemplos de Payloads
 
-> **Observação:** Para respeitar os relacionamentos entre as tabelas, crie os objetos na seguinte ordem:  
-> `Patio` → `Dispositivo` → `Moto` → `HistoricoPatio`
+---
 
-### 🔹 Patio
+### ✅ Exemplo de Payload (v1)
 
-**POST /api/Patio**
-
+🔹 Patio
 ```json
 {
-  "nome": "Patio Central",
-  "endereco": "Rua das Flores, 123"
+  "nome": "Pátio Central",
+  "capacidadeMaxima": 50,
+  "administradorResponsavel": "João",
+  "endereco": {
+    "logradouro": "Rua A",
+    "numero": 100,
+    "cidade": "São Paulo",
+    "cep": "00000-000",
+    "pais": "Brasil"
+  }
 }
 ```
 
-**PUT /api/Patio/{id}**
-
+🔹 Dispositivo
 ```json
 {
-  "nome": "Patio Leste",
-  "endereco": "Avenida das Palmeiras, 456"
+  "statusDispositivo": "Ativo",
+  "motoId": null,
+  "patioId": 1
 }
 ```
 
-### 🔹 Dispositivo
-
-**POST /api/Dispositivo**
-
-```json
-{
-  "codigo": "BR-001",
-  "status": "Ativo"
-}
-```
-
-**PUT /api/Dispositivo/{id}**
-
-```json
-{
-  "codigo": "BR-002",
-  "status": "Inativo"
-}
-```
-
-### 🔹 Moto
-
-**POST /api/Moto**
-
+🔹 Moto
 ```json
 {
   "imei": "123456789012345",
-  "placa": "ABC-1234",
-  "dispositivoId": 1
+  "placa": "ABC-1234"
 }
 ```
 
-**PUT /api/Moto/{id}**
-
-```json
-{
-  "imei": "987654321098765",
-  "placa": "XYZ-9876",
-  "dispositivoId": 1
-}
-```
-
-### 🔹 HistoricoPatio
-
-**POST /api/HistoricoPatio**
-
+🔹 HistoricoPatio
 ```json
 {
   "motoId": 1,
   "patioId": 2,
-  "dataMovimentacao": "2025-09-18T10:00:00"
+  "dataEntrada": "2025-09-18T10:00:00"
 }
 ```
+
+### ✅ Exemplo de Payload (v2)
+
+🔹 Predição
+```json
+{
+  "motosAtuais": 20,
+  "entradaMedia": 4,
+  "saidaMedia": 2,
+  "capacidadeMaxima": 60
+}
+```
+
+---
+
+## ✅ Testes Automatizados
+
+---
+
+### ✅ Testes Unitários  
+**Local:** `MottuBracelet.Tests/Services`
+
+Os testes unitários cobrem os principais serviços da aplicação:
+
+- `ServicoMotos`
+- `ServicoPatios`
+- `ServicoDispositivos`
+- `ServicoHistoricoPatios`
+
+Cada teste valida:
+- Criação de registros  
+- Consulta por ID  
+- Remoção  
+- Funcionamento isolado usando **EF Core InMemory**
+
+---
+
+### ✅ Testes de Integração  
+**Local:** `MottuBracelet.Tests/Integrations`
+
+Tecnologias utilizadas:
+- `WebApplicationFactory`
+- `HttpClient`
+- Banco **InMemory** para isolar o ambiente real
+
+Cobertura:
+- Health Check  
+- Endpoint `/api/v1/moto`  
+- Middleware de API Key funcionando  
+
+---
+
+### ✅ Como rodar os testes
+
+No terminal, dentro da solução:
+
+```bash
+dotnet test
