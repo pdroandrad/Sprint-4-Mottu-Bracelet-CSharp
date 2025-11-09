@@ -10,7 +10,7 @@ O **Mottu Bracelet** é um projeto desenvolvido para a empresa **Mottu**, com o 
 
 Nesta Sprint 4, o projeto evoluiu e passou a incluir:
 
-- API Versioning (v1 e v2)  
+- Versionamento de API (v1 e v2)  
 - Health Check (`/health`)  
 - Middleware de autenticação por API Key  
 - Endpoint de predição com ML.NET  
@@ -49,7 +49,7 @@ Endpoint simples que retorna **200 OK** caso a API esteja funcionando.
 
 ```GET /health```
 
-### ✅ 2. API Versioning (v1 e v2)
+### ✅ 2. Versionamento de API (v1 e v2)
 Agora a API possui:
 
 - **v1** → controladores principais (Moto, Patio, Dispositivo, HistoricoPatio)  
