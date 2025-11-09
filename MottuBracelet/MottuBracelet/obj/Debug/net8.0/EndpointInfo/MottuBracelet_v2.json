@@ -1,0 +1,83 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "MottuBracelet API",
+    "version": "v2"
+  },
+  "paths": {
+    "/api/v2/Ml/prever-ocupacao": {
+      "post": {
+        "tags": [
+          "Ml"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatioOcupacaoInput"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatioOcupacaoInput"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatioOcupacaoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PatioOcupacaoInput": {
+        "type": "object",
+        "properties": {
+          "motosAtuais": {
+            "type": "number",
+            "format": "float"
+          },
+          "entradaMedia": {
+            "type": "number",
+            "format": "float"
+          },
+          "saidaMedia": {
+            "type": "number",
+            "format": "float"
+          },
+          "capacidadeMaxima": {
+            "type": "number",
+            "format": "float"
+          },
+          "ocupacaoFutura": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "description": "Informe a API Key no header: X-API-KEY",
+        "name": "X-API-KEY",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKey": [ ]
+    }
+  ]
+}
